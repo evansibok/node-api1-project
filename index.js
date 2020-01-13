@@ -55,29 +55,20 @@ app.get('/api/users/:id', (req, res) => {
 });
 
 app.post('/api/users', (req, res) => {
-  // 1. No content
-  // 2. Partial Content
   const newUser = req.body;
 
-  insert(newUser)
-    .then(data => {
-      console.log(data);
-      if (data) {
-        res.status(201).json(data);
-      } else if (!data) {
-        res.status(400).json({ message: `Please provide name and bio for the user.` })
-      } else {
-        res.status(500).json({ message: "There was an error while saving the user to the database" })
-      }
-    })
-    .catch(error => {
-      console.log(error.message);
-      res.status(500).json({
-        message: error.message,
-        stack: error.stack,
+  if(!newUser.name || !newUser.bio){
+    res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
+  } else {
+    insert(newUser)
+      .then(data => {
+        res.status(201).json(data)
       })
-    });
-}); // NOT DONE!
+      .catch(error => {
+        res.status(500).json({ errorMessage: "There was an error while saving the user to the database" })
+      });
+  }
+});
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
@@ -115,3 +106,9 @@ app.delete('/api/users/:id', (req, res) => {
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
+
+// GET ALL - done
+// GET SINGLE - done
+// POST
+// PUT
+// DELETE - done
