@@ -57,7 +57,7 @@ app.get('/api/users/:id', (req, res) => {
 app.post('/api/users', (req, res) => {
   const newUser = req.body;
 
-  if(!newUser.name || !newUser.bio){
+  if (!newUser.name || !newUser.bio) {
     res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
   } else {
     insert(newUser)
@@ -98,7 +98,10 @@ app.delete('/api/users/:id', (req, res) => {
       }
     })
     .catch(error => {
-      res.status(500).json(error.errorMessage);
+      res.status(500).json({
+        errorMessage: "The user could not be removed",
+        stack: error.stack,
+      });
     });
 });
 
@@ -109,6 +112,6 @@ app.listen(port, () => {
 
 // GET ALL - done
 // GET SINGLE - done
-// POST
+// POST - done
 // PUT
-// DELETE - done
+// DELETE
