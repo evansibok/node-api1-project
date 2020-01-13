@@ -1,8 +1,11 @@
 // implement your API here
 
-// Export Express and Cors
+// Import Express and Cors
 const express = require('express');
 const cors = require('cors');
+
+//Import Actions from db file
+const { find, findById, insert, update, remove } = require('./data/db');
 
 // Instantiate Server App and Port
 const app = express();
@@ -15,27 +18,36 @@ app.use(express.json());
 app.use(cors());
 
 // Endpoints
-app.get('/', () => {
+app.get('/api/users', (req, res) => {
+  find()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(error => {
+      res.status(404).json({
+        message: error.message,
+        stack: error.stack,
+      });
+    });
+});
+
+app.get('/api/users/:id', (req, res) => {
 
 });
 
-app.get('/', () => {
+app.post('/api/users', (req, res) => {
 
 });
 
-app.post('/', () => {
+app.put('/api/users/:id', async (req, res) => {
 
 });
 
-app.put('/', () => {
-
-});
-
-app.delete('/', () => {
+app.delete('/', (req, res) => {
 
 });
 
 // Start server to listen to changes
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-})
+  console.log(`listening on port ${port}`);
+});
