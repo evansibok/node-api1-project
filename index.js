@@ -11,11 +11,12 @@ const { find, findById, insert, update, remove } = require('./data/db');
 const app = express();
 const port = 9000;
 
+// Enable cors so app work for all origins
+app.use(cors());
+
 // Plug extra functionality needed to use req and res body
 app.use(express.json());
 
-// Enable cors so app work for all origins
-app.use(cors());
 
 // Endpoints
 app.get('/api/users', (req, res) => {
