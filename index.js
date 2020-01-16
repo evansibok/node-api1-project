@@ -72,18 +72,56 @@ app.post('/api/users', (req, res) => {
 
 app.put('/api/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { replacement } = req.body;
+  const replacement = req.body;
 
-  try {
-    const updatedUser = await update(id, replacement);
-    if (updatedUser) {
-      res.status(200).json(updatedUser);
+  const user = await findById(id);
+
+  // Does userWithId exist? No - Return 400
+  // Does req.body.name || req.body.bio exist?  No - Return 400
+  // Error? Return 500
+  // User is found and new information exist? Return 200
+
+  // SOLUTION 1
+
+  // if (!user) {
+  //   res.status(404).json({ message: "The user with the specified ID does not exist." });
+  // } else {
+  //   if (!replacement.name || !replacement.bio) {
+  //     res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+  //   } else {
+  //     update(user.id, replacement)
+  //       .then(data => {
+  //         res.status(200).json({ message: "User information update successful!"});
+  //       })
+  //       .catch(error => {
+  //         res.status(500).json({
+  //           errorMessage: "The user information could not be modified.",
+  //           stack: error.stack,
+  //         })
+  //       });
+  //   }
+  // }
+
+
+  // SOLUTION 2
+  if (!user) {
+    res.status(404).json({ message: "The user with the specified ID does not exist." });
+  } else {
+    if (!replacement.name || !replacement.bio) {
+      res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
     } else {
-      res.status(404).json({ message: `The user with the specified ID ${id} does not exist.` });
+      try {
+        await update(user.id, replacement);
+        res.status(200).json({ message: "User information update successful!" });
+      } catch (error) {
+        res.status(500).json({
+          errorMessage: "The user information could not be modified.",
+          stack: error.stack,
+        });
+      }
     }
-  } catch (error) {
-    res.status(500).json(error.message);
   }
+
 });
 
 app.delete('/api/users/:id', (req, res) => {
@@ -114,4 +152,4 @@ app.listen(port, () => {
 // GET SINGLE - done
 // POST - done
 // PUT
-// DELETE
+// DELETE - done
